@@ -33,19 +33,25 @@ class DataCleaner:
     def get_one_line(self):
         import csv
 
-        column_names = []
-        with open('resources/tbi16037_Shortcut_all_dates.csv', newline='') as f:
-            #for row in csv.reader(f):
-            #    if len(row) > len(column_names):
-            #        column_names = row
-            #print(column_names)
+        largest_rows = []
+        for file in tqdm(os.listdir(TRAIN_DIR)):
+            if '.csv' in file:
+                with open(TRAIN_DIR + '/' + file, newline='') as f:
+                    column_names = []
+                    for row in csv.reader(f):
+                        if len(row) > len(column_names):
+                            column_names = row
+                    print("{}: {}".format(file, len(column_names)))
+                    largest_rows.append(column_names)
+        print("# files: {}".format(len(largest_rows)))
 
-            reader = csv.reader(f)
-            row1 = next(reader)
-            print(row1) # type list
+            # print(row1) # type list
             # print(len(row1))
 
-
+# next: want to do a diff between all the files, see how many lines in common and how many different
+    # are level names shared between files?  Or is each file more/less unique?
+# next: for each file, want to do a diff between all name columns
+    # are they all similar?  do they expand by name?
 
 dc = DataCleaner()
 #dc.create_train_data()
