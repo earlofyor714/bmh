@@ -30,10 +30,10 @@ class DataCleaner:
 
     #def combine_files(self, name):
 
-    def get_one_line(self):
+    def get_max_rows(self):
         import csv
 
-        largest_rows = []
+        largest_rows = {}
         for file in tqdm(os.listdir(TRAIN_DIR)):
             if '.csv' in file:
                 with open(TRAIN_DIR + '/' + file, newline='') as f:
@@ -42,11 +42,10 @@ class DataCleaner:
                         if len(row) > len(column_names):
                             column_names = row
                     print("{}: {}".format(file, len(column_names)))
-                    largest_rows.append(column_names)
-        print("# files: {}".format(len(largest_rows)))
+                    largest_rows[file] = column_names
+        return largest_rows
 
-            # print(row1) # type list
-            # print(len(row1))
+
 
 # next: want to do a diff between all the files, see how many lines in common and how many different
     # are level names shared between files?  Or is each file more/less unique?
@@ -55,4 +54,4 @@ class DataCleaner:
 
 dc = DataCleaner()
 #dc.create_train_data()
-dc.get_one_line()
+dc.get_max_rows()
