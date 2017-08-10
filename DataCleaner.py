@@ -28,8 +28,6 @@ class DataCleaner:
         print(training_data.shape)
         training_data.to_csv(EDIT_DIR + '/combined_data.csv', sep=';')
 
-    #def combine_files(self, name):
-
     def get_max_rows(self):
         import csv
 
@@ -41,10 +39,18 @@ class DataCleaner:
                     for row in csv.reader(f):
                         if len(row) > len(column_names):
                             column_names = row
-                    print("{}: {}".format(file, len(column_names)))
                     largest_rows[file] = column_names
         return largest_rows
 
+    def get_diff_cols(self, dct, main_file, compared_file):
+        return list(set(dct[main_file]).intersection(dct[compared_file]))
+
+    def check_all_unique(self, dct, main_file):
+        return len(dct[main_file]) > len(set(dct[main_file]))
+
+    def disp_cloned_cols(self, dct, main_file, compared_file):
+        shared_cols = self.get_diff_cols(dct, main_file, compared_file)
+        return list(set(dct[compared_file]).difference(shared_cols))
 
 
 # next: want to do a diff between all the files, see how many lines in common and how many different
@@ -54,4 +60,16 @@ class DataCleaner:
 
 dc = DataCleaner()
 #dc.create_train_data()
-dc.get_max_rows()
+largest_rows = dc.get_max_rows()
+print(largest_rows.keys())
+print('-----')
+m = 'tbi16013_Explore_v3_all_dates.csv'
+compared = 'tbi16037_Explore_v3_all_dates.csv'
+#diff = dc.get_diff_cols(largest_rows, m, compared)
+#print("diff size: {}".format(len(diff)))
+#print("main size: {}".format(len(largest_rows[m])))
+#print("compared size: {}".format(len(largest_rows[compared])))
+
+#print("check all unique: {}".format(dc.disp_cloned_cols(largest_rows, m, compared)))
+
+print(largest_rows[compared])
