@@ -3,6 +3,8 @@ import numpy
 import os
 from tqdm import tqdm
 
+import ExploreVisualizer
+
 TRAIN_DIR = 'resources'
 EDIT_DIR = 'resources/edited'
 
@@ -61,15 +63,23 @@ class DataCleaner:
 dc = DataCleaner()
 #dc.create_train_data()
 largest_rows = dc.get_max_rows()
-print(largest_rows.keys())
-print('-----')
+# print(largest_rows.keys())
+# print('-----')
 m = 'tbi16013_Explore_v3_all_dates.csv'
 compared = 'tbi16037_Explore_v3_all_dates.csv'
-#diff = dc.get_diff_cols(largest_rows, m, compared)
-#print("diff size: {}".format(len(diff)))
-#print("main size: {}".format(len(largest_rows[m])))
-#print("compared size: {}".format(len(largest_rows[compared])))
+# diff = dc.get_diff_cols(largest_rows, m, compared)
+# print("diff size: {}".format(len(diff)))
+# print("main size: {}".format(len(largest_rows[m])))
+# print("compared size: {}".format(len(largest_rows[compared])))
 
-#print("check all unique: {}".format(dc.disp_cloned_cols(largest_rows, m, compared)))
+# print("check all unique: {}".format(dc.disp_cloned_cols(largest_rows, m, compared)))
 
-print(largest_rows[compared])
+ev = ExploreVisualizer.ExploreVisualizer(largest_rows[compared])
+ev.split_cols()
+print("total: {}".format(len(largest_rows[compared])))
+print("bats: {}".format(len(ev.bats)))
+print("water: {}".format(len(ev.water)))
+print("rusty: {}".format(len(ev.rusty)))
+print("etc: {}".format(len(ev.etc)))
+print('-----')
+print(ev.etc)
