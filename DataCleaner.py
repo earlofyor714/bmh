@@ -8,6 +8,7 @@ import ExploreVisualizer
 TRAIN_DIR = 'resources'
 EDIT_DIR = 'resources/edited'
 
+
 class DataCleaner:
     def __init__(self):
         self.placeholder = None
@@ -18,7 +19,7 @@ class DataCleaner:
         for person in tqdm(os.listdir(TRAIN_DIR)):
             if '.csv' in person:
                 person_path = TRAIN_DIR + '/' + person
-                #person_data = pandas.read_csv(person_path, sep='delimiter', header=None, engine='python')
+                # person_data = pandas.read_csv(person_path, sep='delimiter', header=None, engine='python')
                 person_data = pandas.read_csv(person_path, sep='delimiter', engine='python')
                 # print(person_data)
 
@@ -30,13 +31,37 @@ class DataCleaner:
         print(training_data.shape)
         training_data.to_csv(EDIT_DIR + '/combined_data.csv', sep=';')
 
-    def get_max_rows(self):
+    def combine_files(self, game_name, file_name):
+        edited_path = os.path.join(EDIT_DIR, file_name)
+
+        if os.path.isfile(edited_path):
+            print("{} exists!".format(edited_path))
+            return
+
+        explore_data = open(edited_path, "a")
+        explore_line_count = 0
+        for raw_file in tqdm(os.listdir(TRAIN_DIR)):
+            if '.csv' in raw_file and game_name in raw_file:
+                full_path = os.path.join(TRAIN_DIR, raw_file)
+                print(full_path)
+                f = open(full_path)
+                f_line_count = 0
+                for line in f:
+                    explore_data.write(line)
+                    f_line_count += 1
+                explore_line_count += f_line_count
+                print("file size: {}".format(f_line_count))
+                f.close()
+        print("{} size: {}".format(game_name, explore_line_count))
+        explore_data.close()
+
+    def get_max_rows(self, directory):
         import csv
 
         largest_rows = {}
-        for file in tqdm(os.listdir(TRAIN_DIR)):
+        for file in tqdm(os.listdir(directory)):
             if '.csv' in file:
-                with open(TRAIN_DIR + '/' + file, newline='') as f:
+                with open(directory + '/' + file, newline='') as f:
                     column_names = []
                     for row in csv.reader(f):
                         if len(row) > len(column_names):
@@ -61,12 +86,15 @@ class DataCleaner:
     # are they all similar?  do they expand by name?
 
 dc = DataCleaner()
-#dc.create_train_data()
-largest_rows = dc.get_max_rows()
-# print(largest_rows.keys())
+
+# dc.create_train_data()
+largest_rows = dc.get_max_rows(EDIT_DIR)
+print(largest_rows.keys())
 # print('-----')
+
 m = 'tbi16013_Explore_v3_all_dates.csv'
 compared = 'tbi16037_Explore_v3_all_dates.csv'
+
 # diff = dc.get_diff_cols(largest_rows, m, compared)
 # print("diff size: {}".format(len(diff)))
 # print("main size: {}".format(len(largest_rows[m])))
@@ -74,12 +102,21 @@ compared = 'tbi16037_Explore_v3_all_dates.csv'
 
 # print("check all unique: {}".format(dc.disp_cloned_cols(largest_rows, m, compared)))
 
-ev = ExploreVisualizer.ExploreVisualizer(largest_rows[compared])
-ev.split_cols()
-print("total: {}".format(len(largest_rows[compared])))
-print("bats: {}".format(len(ev.bats)))
-print("water: {}".format(len(ev.water)))
-print("rusty: {}".format(len(ev.rusty)))
-print("etc: {}".format(len(ev.etc)))
+# ev = ExploreVisualizer.ExploreVisualizer(largest_rows[compared])
+# ev.split_cols()
+# print("total: {}".format(len(largest_rows[compared])))
+# print("bats: {}".format(len(ev.bats)))
+# print("water: {}".format(len(ev.water)))
+# print("rusty: {}".format(len(ev.rusty)))
+# print("etc: {}".format(len(ev.etc)))
 print('-----')
-print(ev.etc)
+# print(ev.etc)
+
+# dc.combine_files('Explore', 'Explore_tbi_153.csv')
+# dc.combine_files('Build', 'Build_tbi_84.csv')
+# dc.combine_files('Gather', 'Gather_tbi_46.csv')
+# dc.combine_files('Hunt', 'Hunt_tbi_78.csv')
+# dc.combine_files('Shortcut', 'Shortcut_tbi_28.csv')
+# dc.combine_files('Study', 'Study_tbi_19.csv')
+# dc.combine_files('Decode', 'Decode_tbi_8.csv')
+# dc.combine_files('New_In-Game_Day_all_dates', 'New_In-Game_Day_all_dates_tbi_38.csv')
