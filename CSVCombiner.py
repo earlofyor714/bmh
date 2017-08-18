@@ -12,7 +12,7 @@ TRAIN_DIR = 'resources'
 EDIT_DIR = 'resources/edited'
 
 
-class DataCleaner:
+class CSVCombiner:
     def __init__(self):
         self.placeholder = None
 
@@ -134,7 +134,7 @@ class DataCleaner:
 # next: for each file, want to do a diff between all name columns
     # are they all similar?  do they expand by name?
 
-dc = DataCleaner()
+dc = CSVCombiner()
 
 # dc.create_train_data()
 # largest_rows = dc.get_max_rows(TRAIN_DIR)
